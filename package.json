@@ -1,0 +1,7 @@
+{
+  "name": "that-depends",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jeremy Greer <jeremy.greer.atl@gmail.com>",
+  "license": "MIT"
+}
