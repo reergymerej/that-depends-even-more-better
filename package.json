@@ -12,6 +12,7 @@
     "nodemon": "^1.17.3"
   },
   "dependencies": {
-    "glob": "^7.1.2"
+    "glob": "^7.1.2",
+    "that-depends-js": "^1.0.1"
   }
 }
