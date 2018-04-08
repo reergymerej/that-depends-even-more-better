@@ -2087,6 +2087,10 @@ that-depends-js@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/that-depends-js/-/that-depends-js-1.0.1.tgz#0bb22300ca508bd8fd713447054d3a06f71916c6"
 
+that-depends-scss@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/that-depends-scss/-/that-depends-scss-1.0.0.tgz#203f0808ea229e521e74c5b92c1b0d783201ed52"
+
 through@2, through@^2.3.6, through@~2.3, through@~2.3.1:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"

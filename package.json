@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "glob": "^7.1.2",
-    "that-depends-js": "^1.0.1"
+    "that-depends-js": "^1.0.1",
+    "that-depends-scss": "^1.0.0"
   }
 }
