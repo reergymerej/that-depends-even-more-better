@@ -19,6 +19,48 @@ const getImports = (extension, file) => {
   }
 }
 
+const addImports = (withImports) => {
+  const fixed = {}
+  Object.keys(withImports).forEach(key => {
+    fixed[key] = {
+      imports: withImports[key],
+    }
+  })
+  return fixed
+}
+
+const addDependents = (withImports) => {
+  const fixed = {}
+  Object.keys(withImports).forEach(key => {
+    const { imports } = withImports[key]
+    // If we recurse, we may have circular dependencies.  :D
+    // We're merging with what's there because we may have built it when adding
+    // the dependents.
+    fixed[key] = fixed[key] || {}
+    fixed[key].imports = fixed[key].imports || []
+    fixed[key].dependents = fixed[key].dependents || []
+    // Each import means this is a dependent of the imported file.
+    fixed[key].imports = fixed[key].imports.concat(...imports)
+    imports.forEach(i => {
+      // key is a dependent of i
+      //
+      // We may import react-redux from node_modules, but we shouldn't included
+      // it unless it's in our set (withImports).
+      if (withImports.hasOwnProperty(i)) {
+        fixed[i] = fixed[i] || {}
+        fixed[i].imports = fixed[i].imports || []
+        fixed[i].dependents = fixed[i].dependents || []
+        fixed[i].dependents.push(key)
+      }
+    })
+  })
+  return fixed
+}
+
+const decorate = withBasicImports => {
+  return addDependents(addImports(withBasicImports))
+}
+
 const run = () => {
   const resultMap = {}
   files.sort().forEach(filepath => {
@@ -27,54 +69,37 @@ const run = () => {
     const imports = getImports(extension, file)
     resultMap[filepath] = imports
   })
-  return resultMap
+  return decorate(resultMap)
+}
+
+const getFilesWithNoImports = (result) => {
+  const noImports = []
+  Object.keys(result).forEach(x => {
+    if (!result[x].imports.length) {
+      noImports.push(x)
+    }
+  })
+  return noImports.sort()
+}
+
+const logResult = (result) => {
+  /* eslint-disable no-console */
+  // console.log(result)
+  const files = Object.keys(result)
+  console.log(`Analyzed ${files.length} files`)
+
+  const filesWithNoImports = getFilesWithNoImports(result)
+  console.log(`${filesWithNoImports.length} files with no imports`)
+  filesWithNoImports.forEach(x => console.log(x))
+
+
+  /* eslint-enabled no-console */
 }
 
 if (require.main === module) {
   const result = run()
-  console.log(result) // eslint-disable-line no-console
+  logResult(result)
 }
-
-const addImports = (withImports) => {
-  const fixed = {
-  }
-
-  Object.keys(withImports).forEach(key => {
-    fixed[key] = {
-      imports: withImports[key],
-    }
-  })
-
-  return fixed
-}
-
-const addDependents = (withImports) => {
-  const fixed = {}
-
-  Object.keys(withImports).forEach(key => {
-    const { imports } = withImports[key]
-
-    // If we recurse, we may have circular dependencies.  :D
-    // We're merging with what's there because we may have built it when adding
-    // the dependents.
-    fixed[key] = fixed[key] || {}
-    fixed[key].imports = fixed[key].imports || []
-    fixed[key].dependents = fixed[key].dependents || []
-
-    // Each import means this is a dependent of the imported file.
-    fixed[key].imports = fixed[key].imports.concat(...imports)
-
-    imports.map(i => {
-      // key is a dependent of i
-      fixed[i] = fixed[i] || {}
-      fixed[i].dependents = fixed[i].dependents || []
-      fixed[i].dependents.push(key)
-    })
-  })
-
-  return fixed
-}
-
 module.exports = {
   run,
   addImports,
