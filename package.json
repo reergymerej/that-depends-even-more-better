@@ -1,9 +1,12 @@
 {
   "name": "that-depends",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "bin/index.js",
   "author": "Jeremy Greer <jeremy.greer.atl@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "./node_modules/.bin/nodemon src/index.js"
+  },
   "devDependencies": {
     "eslint": "^4.19.1",
     "nodemon": "^1.17.3"
